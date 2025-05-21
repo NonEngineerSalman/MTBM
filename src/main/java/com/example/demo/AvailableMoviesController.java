@@ -2,12 +2,16 @@ package com.example.demo;
 
 import com.example.demo.utils.DatabaseConnection;
 import com.example.demo.utils.FXMLScene;
+import com.example.demo.utils.TicketGenerator;
 import com.itextpdf.text.pdf.PdfWriter;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.print.*;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -18,6 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -26,6 +31,7 @@ import javax.imageio.ImageIO;
 import javafx.scene.image.Image;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -194,28 +200,8 @@ public class AvailableMoviesController {
             return;
         }
 
-        Stage receiptStage = new Stage();
-        VBox receiptBox = new VBox(10);
-        receiptBox.setStyle("-fx-padding: 20; -fx-background-color: white;");
-        receiptBox.getChildren().addAll(
-                new Label("🎟️ Movie Ticket Receipt"),
-                new Label("Movie: " + lastPurchasedMovie.getTitle()),
-                new Label("Date: " + lastPurchasedMovie.getDate()),
-                new Label("Normal Tickets: " + lastNormalQty + " × ₹" + normalPrice),
-                new Label("Special Tickets: " + lastSpecialQty + " × ₹" + specialPrice),
-                new Label("Total Paid: ₹" + lastTotal)
-        );
+        showTicketView(lastPurchasedMovie,lastNormalQty,lastSpecialQty,lastTotal);
 
-        Button printBtn = new Button("Print");
-        Button exportBtn = new Button("Export to PDF");
-        receiptBox.getChildren().addAll(printBtn, exportBtn);
-
-        printBtn.setOnAction(e -> printNode(receiptBox));
-        exportBtn.setOnAction(e -> exportReceiptToPDF(receiptBox));
-
-        receiptStage.setScene(new Scene(receiptBox));
-        receiptStage.setTitle("Receipt");
-        receiptStage.show();
     }
 
     private void printNode(Node node) {
@@ -276,4 +262,115 @@ public class AvailableMoviesController {
         stage.setScene(scene);
         stage.show();
     }
+
+    private void showTicketView(Movie movie, int normalQty, int specialQty, int total) {
+        VBox ticketContainer = new VBox(10);
+        ticketContainer.setStyle("-fx-padding: 16; -fx-background-color: white;");
+
+        int seatNo = 1;
+
+        try {
+            // Generate Normal tickets
+            for (int i = 0; i < normalQty; i++) {
+                String ticketId = "TICKET_" + System.currentTimeMillis() + "_N" + i;
+                String qrData = String.format("Movie: %s\nDate: %s\nTime: %s\nHall: %s\nRow: %s\nSeat: %d\nClass: %s\nPrice: %d\nLocation: %s",
+                        movie.getTitle(), movie.getDate(), movie.getDate(), "Blue", "D", seatNo, "Normal", 150, "POV Cinema Hall, Dhaka");
+                String qrPath = TicketGenerator.generateQRCode(qrData, ticketId);
+
+                AnchorPane ticketPane = createSingleTicket(movie.getTitle(), movie.getDate(), movie.getDate(), "BDT150", "Blue", "D", String.valueOf(seatNo), "Normal", "POV Cinema Hall, Dhaka", movie.getPosterPath(), qrPath);
+                ticketContainer.getChildren().add(ticketPane);
+
+                if (i < normalQty - 1 || specialQty > 0) {
+                    Separator separator = new Separator();
+                    separator.setStyle("-fx-background-color: #ccc;");
+                    ticketContainer.getChildren().add(separator);
+                }
+
+                seatNo++;
+            }
+
+            // Generate Special tickets
+            for (int i = 0; i < specialQty; i++) {
+                String ticketId = "TICKET_" + System.currentTimeMillis() + "_S" + i;
+                String qrData = String.format("Movie: %s\nDate: %s\nTime: %s\nHall: %s\nRow: %s\nSeat: %d\nClass: %s\nPrice: %d\nLocation: %s",
+                        movie.getTitle(), movie.getDate(), movie.getDate(), "Hall", "Row", seatNo, "Special", 300, "POV Cinema Hall, Dhaka");
+                String qrPath = TicketGenerator.generateQRCode(qrData, ticketId);
+
+                AnchorPane ticketPane = createSingleTicket(movie.getTitle(), movie.getDate(), movie.getDate(), "BDT300", "Red", "D", String.valueOf(seatNo), "Special", "POV Cinema Hall, Dhaka", movie.getPosterPath(), qrPath);
+                ticketContainer.getChildren().add(ticketPane);
+
+                if (i < specialQty - 1) {
+                    Separator separator = new Separator();
+                    separator.setStyle("-fx-background-color: #ccc;");
+                    ticketContainer.getChildren().add(separator);
+                }
+
+                seatNo++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Wrap tickets in ScrollPane
+        ScrollPane scrollPane = new ScrollPane(ticketContainer);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefViewportHeight(400);
+
+        // Buttons for Print and Export PDF
+        Button printBtn = new Button("Print All");
+        Button exportPdfBtn = new Button("Export PDF");
+
+        HBox buttonBox = new HBox(10, printBtn, exportPdfBtn);
+        buttonBox.setPadding(new Insets(10));
+        buttonBox.setAlignment(Pos.CENTER_RIGHT);
+
+        VBox root = new VBox(10, scrollPane, buttonBox);
+        root.setPadding(new Insets(10));
+
+        Stage ticketStage = new Stage();
+        ticketStage.setTitle("🎟️ Movie Tickets");
+        ticketStage.setScene(new Scene(root, 620, 500));
+        ticketStage.show();
+
+        // Print button action
+        printBtn.setOnAction(evt -> {
+            PrinterJob job = PrinterJob.createPrinterJob();
+            if (job != null && job.showPrintDialog(ticketStage)) {
+                boolean printed = job.printPage(ticketContainer);
+                if (printed) {
+                    job.endJob();
+                }
+            }
+        });
+
+        // Export PDF button action
+        exportPdfBtn.setOnAction(evt -> {
+            try {
+                exportReceiptToPDF(ticketContainer);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "PDF exported successfully!");
+                alert.showAndWait();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to export PDF.");
+                alert.showAndWait();
+            }
+        });
+    }
+
+
+    private AnchorPane createSingleTicket(String title, String date, String time, String price,
+                                    String hall, String row, String seats, String classText, String location,
+                                    String posterPath, String qrPath) {
+        FXMLScene fxmlScene = FXMLScene.load("/com/example/demo/recipt.fxml");
+        // Get the controller for the loaded FXML
+        ReceiptController controller = (ReceiptController) fxmlScene.getController();
+
+        // Call the setData method to pass all ticket info
+        controller.setData(title, date, time, price, hall, row, seats, classText, location, posterPath, qrPath);
+
+        // Return the populated HBox node
+        return (AnchorPane) fxmlScene.getRoot();
+    }
+
+
 }

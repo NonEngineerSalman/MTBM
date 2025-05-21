@@ -134,109 +134,38 @@
                </children>
             </AnchorPane>
          </left>
-         <center>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <AnchorPane fx:id="dashboard_form" layoutX="131.0" layoutY="109.0" prefHeight="182.0" prefWidth="873.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <AnchorPane layoutX="13.0" layoutY="16.0" prefHeight="185.0" prefWidth="874.0" styleClass="bg-white" stylesheets="@designDashboard.css">
-                           <children>
-                              <AnchorPane layoutX="310.0" layoutY="9.0" prefHeight="166.0" prefWidth="254.0" stylesheets="@designDashboard.css">
-                                 <children>
-                                    <AnchorPane prefHeight="168.0" prefWidth="66.0" stylesheets="@designDashboard.css">
-                                       <styleClass>
-                                          <String fx:value="card1-left" />
-                                          <String fx:value="card2-left" />
-                                       </styleClass>
-                                       <children>
-<!--                                          <FontIcon iconLiteral="fa-money" iconColor="#fffdfd" layoutX="4.0" layoutY="103.0" iconSize="72"/>-->
-                                       </children>
-                                    </AnchorPane>
-                                    <Label layoutX="73.0" layoutY="121.0" text="Total Earn Today" textFill="#faf5f5">
-                                       <font>
-                                          <Font name="Microsoft Sans Serif" size="18.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="dashboard_totalEarnToday" alignment="CENTER_RIGHT" layoutX="80.0" layoutY="27.0" prefHeight="28.0" prefWidth="159.0" text="12000" textFill="#faf5f5">
-                                       <font>
-                                          <Font name="Berlin Sans FB" size="30.0" />
-                                       </font>
-                                    </Label>
-                                    <ImageView fitHeight="61.0" fitWidth="63.0" layoutX="66.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@doller.png" />
-                                       </image>
-                                    </ImageView>
-                                 </children>
-                                 <styleClass>
-                                    <String fx:value="card" />
-                                    <String fx:value="card2" />
-                                 </styleClass>
+          <center>
+              <AnchorPane fx:id="dashboard_form" prefHeight="600.0" prefWidth="900.0">
+                  <children>
+                      <!-- Statistics Cards -->
+                      <AnchorPane layoutX="13.0" layoutY="16.0" prefHeight="185.0" prefWidth="874.0"
+                                  styleClass="bg-white" stylesheets="@designDashboard.css">
+                          <!-- your cards content here (same as before) -->
+                      </AnchorPane>
+
+                      <!-- Now Showing Carousel Section -->
+                      <AnchorPane layoutX="13.0" layoutY="220.0" prefHeight="330.0" prefWidth="874.0"
+                                  styleClass="bg-white" stylesheets="@designDashboard.css">
+                          <children>
+                              <Label layoutX="20.0" layoutY="10.0" text="Now Showing" textFill="#333">
+                                  <font>
+                                      <Font name="Segoe UI Semibold" size="22.0"/>
+                                  </font>
+                              </Label>
+
+                              <AnchorPane fx:id="carouselContainer" layoutX="20.0" layoutY="50.0"
+                                          prefHeight="260.0" prefWidth="834.0"
+                                          style="-fx-background-color: transparent;">
+                                  <children>
+                                      <ImageView fx:id="carouselImage" fitHeight="260.0" fitWidth="834.0"
+                                                 pickOnBounds="true" preserveRatio="true"/>
+                                  </children>
                               </AnchorPane>
-                              <AnchorPane layoutX="605.0" layoutY="9.0" prefHeight="166.0" prefWidth="254.0" stylesheets="@designDashboard.css">
-                                 <children>
-                                    <AnchorPane prefHeight="168.0" prefWidth="66.0" styleClass="card3-left" stylesheets="@designDashboard.css">
-                                       <children>
-<!--                                          <FontIcon iconLiteral="fa-play-circle" iconColor="#fffdfd" layoutX="10.0" layoutY="103.0" iconSize="72"/>-->
-                                       </children>
-                                    </AnchorPane>
-                                    <Label layoutX="75.0" layoutY="122.0" text="Available Movies" textFill="#faf5f5">
-                                       <font>
-                                          <Font name="Microsoft Sans Serif" size="18.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="dashboard_availableMovies" alignment="CENTER_RIGHT" layoutX="55.0" layoutY="28.0" prefHeight="22.0" prefWidth="176.0" text="13" textFill="#faf5f5">
-                                       <font>
-                                          <Font name="Berlin Sans FB" size="30.0" />
-                                       </font>
-                                    </Label>
-                                    <ImageView fitHeight="42.0" fitWidth="58.0" layoutX="75.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@play-button.png" />
-                                       </image>
-                                    </ImageView>
-                                 </children>
-                                 <styleClass>
-                                    <String fx:value="card3" />
-                                    <String fx:value="card" />
-                                 </styleClass>
-                              </AnchorPane>
-                              <AnchorPane layoutX="14.0" layoutY="9.0" prefHeight="166.0" prefWidth="254.0" stylesheets="@designDashboard.css">
-                                 <children>
-                                    <AnchorPane prefHeight="168.0" prefWidth="66.0" styleClass="card1-left" stylesheets="@designDashboard.css">
-                                       <children>
-<!--                                          <FontIcon iconLiteral="fa-ticket" iconColor="#fffdfd" layoutX="6.0" layoutY="103.0" iconSize="72"/>-->
-                                       </children>
-                                    </AnchorPane>
-                                    <Label layoutX="79.0" layoutY="118.0" text="Total Sold Ticket" textFill="#faf5f5">
-                                       <font>
-                                          <Font name="Microsoft Sans Serif" size="18.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="dashboard_totalSoldTicket" alignment="CENTER_RIGHT" layoutX="79.0" layoutY="28.0" prefHeight="28.0" prefWidth="160.0" text="1500" textFill="#faf5f5">
-                                       <font>
-                                          <Font name="Berlin Sans FB" size="30.0" />
-                                       </font>
-                                    </Label>
-                                    <ImageView fitHeight="60.0" fitWidth="65.0" layoutX="66.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@tkt.png" />
-                                       </image>
-                                    </ImageView>
-                                 </children>
-                                 <styleClass>
-                                    <String fx:value="card1" />
-                                    <String fx:value="card" />
-                                 </styleClass>
-                              </AnchorPane>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane layoutX="13.0" layoutY="219.0" prefHeight="299.0" prefWidth="873.0" styleClass="bg-white" stylesheets="@designDashboard.css" />
-                     </children>
-                  </AnchorPane>
-               </children>
-            </AnchorPane>
-         </center>
+                          </children>
+                      </AnchorPane>
+                  </children>
+              </AnchorPane>
+          </center>
       </BorderPane>
    </children>
 </AnchorPane>

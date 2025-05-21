@@ -2,7 +2,7 @@ package com.example.demo;
 
 public class Movie {
     private int id;
-    private String title, genre, duration, date, posterPath;
+    private String title, genre, duration, date, posterPath,status;
 
     public Movie(int id, String title, String genre, String duration, String date, String posterPath) {
         this.id = id;
@@ -11,6 +11,16 @@ public class Movie {
         this.duration = duration;
         this.date = date;
         this.posterPath = posterPath;
+    }
+    public Movie(int id, String title, String genre, String duration, String date, String posterPath,String status) {
+        this.id = id;
+        this.title = title;
+        this.genre = genre;
+        this.duration = duration;
+        this.date = date;
+        this.posterPath = posterPath;
+        this.status = status;
+
     }
 
     public int getId() { return id; }
@@ -30,4 +40,6 @@ public class Movie {
 
     public String getPosterPath() { return posterPath; }
     public void setPosterPath(String posterPath) { this.posterPath = posterPath; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
