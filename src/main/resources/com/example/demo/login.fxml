@@ -34,7 +34,7 @@
                         <Font name="Microsoft Sans Serif" size="12.0" />
                     </font>
                 </Button>
-                <Hyperlink fx:id="signin_createAccount" layoutX="225.0" layoutY="362.0" onAction="#creatAccount" stylesheets="@designLogin.css" text="Creat a new account">
+                <Hyperlink fx:id="signin_createAccount" layoutX="230.0" layoutY="358.0" onAction="#creatAccount" stylesheets="@designLogin.css" text="Creat a new account">
                     <font>
                         <Font size="14.0" />
                     </font></Hyperlink>
